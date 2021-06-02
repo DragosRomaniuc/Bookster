@@ -6,17 +6,17 @@ import { useSelector } from "react-redux";
 
 import { navigationRef } from "helpers/NavigationHelper";
 import { RootState } from "redux/rootReducer";
-import { getItem, StorageKeys } from "utils/storage";
+import { StorageKeys } from "utils/storage";
+import * as Storage from "utils/storage";
 
 import Unauthenticated from "./Unauthenticated";
 import Authenticated from "./Authenticated";
 const Stack = createStackNavigator();
 
 const RootNavigator = () => {
+  // const token = Storage.getItem(StorageKeys.TOKEN);
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-
-  console.log("din root navigator", isLoggedIn);
-  console.log(isLoggedIn);
+  // a se verifica si token pt a mentine conexiunea
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
