@@ -5,17 +5,14 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { useDispatch } from "react-redux";
 
 import { Block, Text } from "components";
 import theme from "style";
 import { width } from "style/theme";
 import baseRequest from "helpers/base-request";
-import * as Storage from "utils/storage";
-import { StorageKeys } from "utils/storage";
-import { auth } from "ducks";
 
 import navigationOptions from "./navigationOptions";
+import List from "./components/List";
 
 type Props = {
   navigation?: any;
@@ -24,7 +21,8 @@ type Props = {
 
 const SearchList = (props: Props) => {
   const [search, setSearch] = useState<string>("");
-  const dispatch = useDispatch();
+  const [books, setBooks] = useState<[]>([]);
+
   const getBooks = async () => {
     const { data } = await baseRequest("/books", {
       method: "get",
@@ -36,9 +34,15 @@ const SearchList = (props: Props) => {
   };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(() => {
-    // removeItem(StorageKeys.TOKEN);
-    getBooks().then((books) => console.log(books));
+    getBooks().then((data) => {
+      if (!search) setBooks([]);
+      else setBooks(data.books);
+    });
   }, [search]);
+
+  React.useEffect(() => {
+    console.log("schimbat");
+  }, [books]);
 
   React.useEffect(() => {
     props.navigation.setOptions({
@@ -49,7 +53,9 @@ const SearchList = (props: Props) => {
         >
           <TextInput
             style={styles.textInput}
-            onChangeText={(text) => setSearch(text)}
+            onChangeText={(text) => {
+              setSearch(text);
+            }}
           />
         </TouchableOpacity>
       ),
@@ -58,11 +64,13 @@ const SearchList = (props: Props) => {
 
   return (
     <Block>
+      <Text center primary bold h2 style={{ marginVertical: 10 }}>
+        Found {books.length} Books
+      </Text>
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{ paddingVertical: theme.sizes.base * 2.3, padding: 20 }}
       >
-        <Text regular>Books</Text>
         <Block
           flex={0}
           space="between"
@@ -72,9 +80,7 @@ const SearchList = (props: Props) => {
             showsHorizontalScrollIndicator={false}
             style={{ flex: 1, flexWrap: "wrap" }}
           >
-            {[1, 2, 3].map((item, index) => {
-              return <Text key={index}>{index}</Text>;
-            })}
+            <List data={books || []} />
           </ScrollView>
         </Block>
       </ScrollView>

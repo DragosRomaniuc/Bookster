@@ -12,10 +12,15 @@ const openSignIn = (navigation) => (props = {}) => {
   navigation.push("SIGNIN", props);
 };
 
+const openBookDetails = (navigation) => (props = {}) => {
+  navigation.push("BOOK_DETAILS", props);
+};
+
 const navigate = (navigation) => ({
   goBack: navigation.goBack,
   openSignUp: navigateOneTime(openSignUp(navigation)),
   openSignIn: navigateOneTime(openSignIn(navigation)),
+  openBook: navigateOneTime(openBookDetails(navigation)),
 });
 
 export default navigate;
